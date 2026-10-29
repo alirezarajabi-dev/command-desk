@@ -210,7 +210,7 @@ function distance(a,b){const row=Array.from({length:b.length+1},(_,i)=>i);for(le
 export function searchCommands(query,category='all',favorites=null){
  const tokens=query.toLowerCase().trim().split(/\s+/).filter(Boolean).slice(0,12);
  return commands.map(item=>{if(category!=='all'&&item.category!==category)return null;if(favorites&&!favorites.includes(item.id))return null;
-  const title=item.title.toLowerCase(),words=`${title} ${item.purpose} ${item.tags}`.toLowerCase().split(/[^a-z0-9]+/);let score=0;
+  const title=item.title.toLowerCase(),words=`${title} ${item.purpose} ${item.tags} ${item.category} ${categories.find(c=>c.id===item.category).label}`.toLowerCase().split(/[^a-z0-9]+/);let score=0;
   for(const token of tokens){if(title.includes(token)){score+=6;continue;}if(words.some(w=>w.includes(token))){score+=3;continue;}const near=token.length>=4&&token.length<=24?words.find(w=>Math.abs(w.length-token.length)<=1&&distance(token,w)<=1):null;if(near){score+=title.includes(near)?4:1;continue;}return null;}return {item,score};
  }).filter(Boolean).sort((a,b)=>b.score-a.score).map(x=>x.item);
 }

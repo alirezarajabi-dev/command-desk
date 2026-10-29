@@ -1,6 +1,10 @@
 # Bizkonic Command Desk
 
-English-only, browser-local command lookup and parameter builder by Alireza Rajabi.
+Browser-local command lookup and parameter builder by Alireza Rajabi.
+Supports English, French and Farsi. Every new load, reload or
+return after leaving starts in English. Language stays in memory for internal
+navigation only; it is never remembered in localStorage, cookies or the URL.
+
 [Open the app](https://alirezarajabi-dev.github.io/command-desk/)
 
 Find the right command, build it for your environment and understand the next step.
@@ -33,12 +37,18 @@ The frame scales to fit the review panel; use the ordinary root page for normal-
 - Continuous-ping, port filtering and optional force-termination variants.
 - Copy feedback, side-by-side comparison and saved command IDs.
 - A five-step printer-network troubleshooting guide with editable IP and print port.
+- SMTP desk: opt-in domain MX lookup, clearly separate sending-provider
+  references, and a guide for reading the printer's actual SMTP configuration.
 - Purpose, interpretation, prerequisites, local help and external references.
 - Original owner-supplied Bizkonic logo, gold/navy/teal tokens, system/Segoe UI typography,
   licensed local Caveat accent font. No substituted or generated logo.
 
-The app does not execute commands, scan devices, contact a backend, collect terminal
-output or store parameter values. Saved IDs and the chosen environment use localStorage.
+The app does not execute commands, scan devices, collect terminal output or store
+parameter values. The SMTP desk makes a DNS-only HTTPS request to Google Public
+DNS when Look up is chosen; it strips the email username and sends only the domain
+as the query. Google also receives normal connection information. Lookup results and
+printer entries are not saved. It never reads printer settings automatically or asks
+for device/email credentials. Saved IDs and the chosen environment use localStorage.
 Copy uses the Clipboard API with a selectable-text fallback. External references open
 only when chosen. Inspect a generated command before running it in the intended shell.
 
@@ -57,9 +67,9 @@ Browser layout/copy checks do not verify execution on macOS or Linux.
 ## Files
 
 `index.html` is the entry point; `styles.css`, `app.js` and `commands.js` separate
-presentation, interactions and command data. `server.mjs` serves only preview assets
+presentation, interactions and command data. `mail-model.js` / `mail-ui.js` handle the SMTP desk; `i18n.js` and the translation modules handle the three languages. `server.mjs` serves only preview assets
 on loopback. No Tailwind CDN, framework, tracking, login, paid API or build process.
-Font license: assets/caveat-OFL.txt. Brand artwork belongs to Alireza Rajabi and is
+Font licenses: assets/caveat-OFL.txt and assets/vazirmatn-OFL.txt. Brand artwork belongs to Alireza Rajabi and is
 not a general-purpose open-source asset. No open-source license is granted for
 the original app or brand artwork. The third-party font retains its included OFL license.
 

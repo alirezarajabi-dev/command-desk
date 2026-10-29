@@ -1,4 +1,6 @@
-import {commands,platforms,categories,fields,validateField,buildCommand,searchCommands,workflow} from './commands.js';
+import {commands,platforms,categories,fields,validateField,buildCommand,searchCommands,workflow} from './commands.js?v=2';
+import {initMailDesk} from './mail-ui.js?v=2';
+import {installLanguages,searchInEnglish} from './i18n.js?v=2';
 const $=id=>document.getElementById(id);
 const icons={grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',network:'<rect x="8" y="3" width="8" height="6" rx="1"/><path d="M12 9v5M5 17v-3h14v3"/><rect x="2" y="17" width="6" height="4" rx="1"/><rect x="16" y="17" width="6" height="4" rx="1"/>',cpu:'<rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v3m6-3v3M9 19v3m6-3v3M2 9h3m-3 6h3m14-6h3m-3 6h3"/>',folder:'<path d="M3 6h7l2 3h9v11H3z"/><path d="M3 9V4h7l2 2h8v3"/>',shield:'<path d="m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6z"/><path d="m8 12 3 3 5-6"/>',copy:'<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V3H3v13h5"/>'};
 function icon(name){const node=document.createElementNS('http://www.w3.org/2000/svg','svg');node.setAttribute('viewBox','0 0 24 24');node.setAttribute('aria-hidden','true');node.innerHTML=icons[name];return node;}
@@ -11,7 +13,7 @@ let category='all',savedOnly=false,selected='tcp',values={},toggle=false,page=0,
 const pageSize=7;
 $('copy-icon').append(icon('copy'));
 function current(){return commands.find(c=>c.id===selected);}
-function results(){return searchCommands($('search').value,category,savedOnly?favorites:null);}
+function results(){return searchCommands(searchInEnglish($('search').value),category,savedOnly?favorites:null);}
 function toast(message){clearTimeout(toastTimer);$('toast').textContent=message;$('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,2600);}
 function setCategory(id){savedOnly=id==='saved';category=savedOnly?'all':id;page=0;setMode('library');render();}
 function renderNav(){
@@ -74,7 +76,7 @@ function selectCommand(id,scroll=false,overrides={}){
 }
 function render(){renderNav();renderPlatforms();const found=results();if(found.length&&!found.some(x=>x.id===selected)){selected=found[0].id;values={};toggle=false;}renderList();renderDetail();$('clear-search').hidden=!$('search').value;}
 async function copyText(text){try{await navigator.clipboard.writeText(text);toast('Command copied. Paste it into your terminal.');}catch{const area=el('textarea');area.value=text;area.setAttribute('readonly','');area.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';document.body.append(area);area.select();let copied=false;try{copied=document.execCommand('copy');}catch{}area.remove();if(copied)toast('Command copied.');else toast('Copy was blocked. Select the command text and copy it.');}}
-function setMode(next){mode=next;$('field-guide').hidden=next!=='guide';$('library').hidden=next==='guide';$('workbench').hidden=next==='guide';$('workflow-button').classList.toggle('active',next==='guide');}
+function setMode(next){mode=next;$('field-guide').hidden=next!=='guide';$('mail-desk').hidden=next!=='mail';$('library').hidden=next!=='library';$('workbench').hidden=next!=='library';$('workflow-button').classList.toggle('active',next==='guide');$('mail-button').classList.toggle('active',next==='mail');}
 function openGuide(){setMode('guide');renderNav();$('field-guide').scrollIntoView({behavior:'smooth',block:'start'});}
 function renderGuide(){const holder=$('guide-steps');holder.replaceChildren();workflow.forEach((step,index)=>{const article=el('article','guide-step');const content=el('div');const button=el('button','',`Build command · ${commands.find(c=>c.id===step.id).title}`);button.type='button';button.addEventListener('click',()=>{const host=$('guide-host').value.trim(),port=$('guide-port').value;const error=validateField('host',host)||validateField('port',port);$('guide-error').textContent=error;$('guide-error').hidden=!error;if(error){$('guide-host').focus();return;}category='all';savedOnly=false;$('search').value='';page=Math.floor(commands.findIndex(x=>x.id===step.id)/pageSize);selectCommand(step.id,true,{host,port});renderNav();});content.append(el('h3','',step.title),el('p','',step.body),el('p','guide-question',step.question),button);article.append(el('span','step-number',String(index+1).padStart(2,'0')),content);holder.append(article);});}
 $('search').addEventListener('input',()=>{page=0;setMode('library');render();});
@@ -91,4 +93,10 @@ $('reset-filters').addEventListener('click',()=>{category='all';savedOnly=false;
 $('back-to-results').addEventListener('click',()=>{$('workbench').classList.remove('mobile-active');$('library').scrollIntoView({behavior:'smooth',block:'start'});const button=$('command-list').querySelector('.selected .open-command');button?.focus({preventScroll:true});});
 $('about-button').addEventListener('click',()=>$('about-dialog').showModal());$('about-dialog').addEventListener('click',e=>{if(e.target===$('about-dialog')){const r=$('about-dialog').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('about-dialog').close();}});
 document.addEventListener('keydown',e=>{if(e.key==='/'&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&!$('about-dialog').open){e.preventDefault();$('search').focus();}});
+const mailDesk=initMailDesk({back:()=>{setMode('library');render();$('library').scrollIntoView({behavior:'smooth'});},testPort:(host,port)=>{category='all';savedOnly=false;$('search').value='';page=0;selectCommand('tcp',true,{host,port});renderNav();}});
+function openMailDesk(){setMode('mail');renderNav();$('mail-desk').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
+$('mail-button').addEventListener('click',openMailDesk);$('mail-shortcut').addEventListener('click',openMailDesk);
+if(new URLSearchParams(location.search).get('panel')==='smtp'){renderGuide();render();openMailDesk();}else{
 renderGuide();render();
+}
+const localeController=installLanguages();
