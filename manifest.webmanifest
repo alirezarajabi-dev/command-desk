@@ -11,8 +11,8 @@
   "background_color": "#0c1b2e",
   "theme_color": "#0c1b2e",
   "icons": [
-    { "src": "assets/icon.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "assets/bk-commands-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/bk-commands-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/bk-commands-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

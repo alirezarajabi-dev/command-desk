@@ -15,7 +15,8 @@ the main Bizkonic app and Field Report are maintained separately.
 
 ## Home screen and desktop installation
 
-The installed name is **Command Desk**, with the original **BK** icon on navy.
+The installed name is **Command Desk**. Its distinct navy icon contains the
+original **BK** mark with **Commands** drawn underneath inside the image.
 The manifest includes regular 192px/512px and maskable icons; iPhone/iPad use
 the 180px Apple touch icon and the same short name. Installation stays scoped
 to `/command-desk/`, separate from Field Report on the same GitHub Pages origin.
