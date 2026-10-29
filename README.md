@@ -13,6 +13,16 @@ the main Bizkonic app and Field Report are maintained separately.
 
 ![Command Desk desktop interface](docs/images/desktop.png)
 
+## Home screen and desktop installation
+
+The installed name is **Command Desk**, with the original **BK** icon on navy.
+The manifest includes regular 192px/512px and maskable icons; iPhone/iPad use
+the 180px Apple touch icon and the same short name. Installation stays scoped
+to `/command-desk/`, separate from Field Report on the same GitHub Pages origin.
+Use the browser's Add to Home Screen or Install app option when available.
+An existing shortcut may need to be removed and added again to refresh its
+cached icon/name. Offline support is not included.
+
 ## Use locally
 
 Requires Node.js 20 or newer, with no dependencies to install.
