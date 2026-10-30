@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/bk-commands-512.png" alt="BK Commands app icon" width="96" height="96"></p>
+
 # Bizkonic Command Desk
 
 Browser-local command lookup and parameter builder by Alireza Rajabi.
@@ -5,7 +7,7 @@ Supports English, French and Farsi. Every new load, reload or
 return after leaving starts in English. Language stays in memory for internal
 navigation only; it is never remembered in localStorage, cookies or the URL.
 
-[Open the app](https://alirezarajabi-dev.github.io/command-desk/)
+[Open the app](https://alirezarajabi-dev.github.io/command-desk/) · [Logo files](assets/)
 
 Find the right command, build it for your environment and understand the next step.
 No accounts, installs or backend required. An independent portfolio project;
